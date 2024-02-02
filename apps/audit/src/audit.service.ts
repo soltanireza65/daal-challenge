@@ -1,4 +1,4 @@
-import { AuditLogEventData } from '@app/common/events/audit.event';
+import { AuditLogEventData } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

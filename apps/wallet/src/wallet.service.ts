@@ -1,8 +1,8 @@
-import { ACTION_WALLET_DEPOSIT, ACTION_WALLET_WITHDRAW } from '@app/common/constants/actions';
-import { EVENT_WALLET_TOPUP } from '@app/common/constants/events';
-import { AUDIT_SERVICE } from '@app/common/constants/services';
-import { AuditLogEventData } from '@app/common/events/audit.event';
-import { Inject, Injectable } from '@nestjs/common';
+import { ACTION_WALLET_DEPOSIT, ACTION_WALLET_WITHDRAW } from '@app/common';
+import { EVENT_WALLET_TOPUP } from '@app/common';
+import { AUDIT_SERVICE } from '@app/common';
+import { AuditLogEventData } from '@app/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Connection, Model } from 'mongoose';
@@ -12,6 +12,8 @@ import { Wallet } from './schemas/wallet.schema';
 
 @Injectable()
 export class WalletService {
+
+  private readonly logger = new Logger(WalletService.name);
 
   constructor(
     @InjectModel(Wallet.name) private walletModel: Model<Wallet>,

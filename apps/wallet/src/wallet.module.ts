@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { WalletSchema } from './schemas/wallet.schema';
 import { TransactionSchema } from './schemas/transaction.schema';
 import { RmqModule } from '@app/common';
-import { AUDIT_SERVICE } from '@app/common/constants/services';
+import { AUDIT_SERVICE } from '@app/common';
 @Module({
   imports: [
     ConfigModule.forRoot({

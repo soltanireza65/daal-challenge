@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { AuditLogEventData } from '@app/common/events/audit.event';
-import { EVENT_WALLET_TOPUP } from '@app/common/constants/events';
+import { AuditLogEventData } from '@app/common';
+import { EVENT_WALLET_TOPUP } from '@app/common';
 
 @Controller("audit")
 export class AuditController {
