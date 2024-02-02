@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { WalletController } from './wallet.controller';
 import { WalletService } from './wallet.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -29,6 +30,7 @@ import { AUDIT_SERVICE } from '@app/common';
       { name: "Transaction", schema: TransactionSchema },
     ]),
     RmqModule.register({ name: AUDIT_SERVICE }),
+    ScheduleModule.forRoot()
   ],
   controllers: [WalletController],
   providers: [WalletService],

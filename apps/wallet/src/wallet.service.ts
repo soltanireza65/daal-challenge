@@ -9,6 +9,7 @@ import { ClientSession, Connection, Model } from 'mongoose';
 import { lastValueFrom } from 'rxjs';
 import { Transaction } from './schemas/transaction.schema';
 import { Wallet } from './schemas/wallet.schema';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class WalletService {
@@ -80,6 +81,25 @@ export class WalletService {
       throw error;
     }
   }
+
+  @Cron('0 0 * * *') // Runs every day at midnight
+    async calculateAndLogTotalTransactions() {
+      try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const totalTransactions = await this.transactionModel.countDocuments({
+          createdAt: { $gte: today, $lt: tomorrow }
+        });
+
+        this.logger.log(`Total transactions processed today: ${totalTransactions}`);
+      } catch (error) {
+        this.logger.error('Error calculating and logging total transactions', error);
+      }
+    }
 
   async startTransaction(): Promise<ClientSession> {
     const session = await this.connection.startSession();
