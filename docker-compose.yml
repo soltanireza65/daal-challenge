@@ -36,7 +36,7 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - '3001:3000'
+      - '3001:3001'
   
   rabbitmq:
     image: rabbitmq:3-management-alpine
