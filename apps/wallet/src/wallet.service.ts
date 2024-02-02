@@ -17,8 +17,7 @@ export class WalletService {
   private readonly logger = new Logger(WalletService.name);
 
   // simulate users in db
-  private readonly _userIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
+  private readonly _userIds = [1, 2];
 
   constructor(
     @InjectModel(Wallet.name) private walletModel: Model<Wallet>,
@@ -28,23 +27,25 @@ export class WalletService {
   ) { }
 
   async getUserBalance(user_id: number) {
-    if(!this._userIds.includes(user_id)) throw new Error('Invalid user id')
+    if (!this._userIds.includes(user_id)) throw new Error('Invalid user id')
 
     let wallet = await this.walletModel.findOne({ user_id })
 
     if (!wallet) {
+      // just create a new wallet for demo
+      // in production you should not create a new wallet
+      // and just throw an error e.g. 
+
+      // throw new NotFoundException("Wallet not found for user id: " + user_id)
       wallet = new this.walletModel({ user_id, balance: 0 });
       await wallet.save();
     }
 
-    return {
-      user_id,
-      balance: wallet?.balance,
-    }
+    return wallet
   }
 
   async updateBallance(user_id: number, amount: number) {
-    if(!this._userIds.includes(user_id)) throw new Error('Invalid user id')
+    if (!this._userIds.includes(user_id)) throw new Error('Invalid user id')
 
     let wallet = await this.walletModel.findOne({ user_id })
 
@@ -52,6 +53,11 @@ export class WalletService {
 
     try {
       if (!wallet) {
+        // just create a new wallet for demo
+        // in production you should not create a new wallet
+        // and just throw an error e.g. 
+
+        // throw new NotFoundException("Wallet not found for user id: " + user_id)
         wallet = new this.walletModel({ user_id, balance: amount });
         await wallet.save();
       } else {
