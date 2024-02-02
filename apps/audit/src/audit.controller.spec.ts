@@ -1,22 +1,41 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Types } from 'mongoose';
 import { AuditController } from './audit.controller';
 import { AuditService } from './audit.service';
 
-describe('AuditController', () => {
-  let auditController: AuditController;
+describe('WalletController', () => {
+  let controller: AuditController;
+  let fakeService: Partial<AuditService>;
+  let balance;
 
   beforeEach(async () => {
+    balance = 0
+    fakeService = {
+      getAuditLogs() {
+        return Promise.resolve([
+          {
+            "user_id": 1,
+            "action": "WALLET:DEPOSIT",
+            "createdAt": "2024-02-02T12:47:26.132Z",
+            "updatedAt": "2024-02-02T12:47:26.132Z"
+          } as any
+        ])
+      },
+    } as Partial<AuditService>;
+
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AuditController],
-      providers: [AuditService],
+      providers: [{ provide: AuditService, useValue: fakeService }],
     }).compile();
 
-    auditController = app.get<AuditController>(AuditController);
+    controller = app.get<AuditController>(AuditController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      // expect(auditController.getHello()).toBe('Hello World!');
-    });
+  it('should return audit logs', async () => {
+    // act
+    const logs = await controller.getAuditLogs();
+
+    // assert
+    expect(logs.length).toEqual(1);
   });
 });

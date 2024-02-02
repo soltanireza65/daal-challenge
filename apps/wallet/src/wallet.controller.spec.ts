@@ -11,14 +11,13 @@ describe('WalletController', () => {
   beforeEach(async () => {
     balance = 0
     fakeService = {
-      // balance: 1,
       _userIds: [1, 2],
       getUserBalance(user_id: number) {
         if (!this._userIds.includes(user_id)) throw new Error('Invalid user id')
         return Promise.resolve({
           user_id,
           balance
-        });
+        } as any);
       },
       updateBallance(user_id, amount): Promise<{
         user_id: number;
