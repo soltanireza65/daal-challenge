@@ -1,0 +1,111 @@
+image: <ci_base_image>
+
+stages:
+  - build
+  - deploy
+  
+variables:
+  REGISTRY_URL: <repo_url>
+  TAG: $CI_COMMIT_SHA
+
+build-wallet:
+  rules:
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main")
+  stage: build
+  before_script:
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  script:
+    - echo $CI_COMMIT_TAG && echo $CI_COMMIT_BRANCH
+    - docker build -f "./apps/wallet/Dockerfile" -t "$REGISTRY_URL":"$TAG" .
+    - docker push "$REGISTRY_URL":"$TAG"
+    - echo "Docker Image pushed into registry"
+
+build-audit:
+  rules:
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main")
+  stage: build
+  before_script:
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  script:
+    - echo $CI_COMMIT_TAG && echo $CI_COMMIT_BRANCH
+    - docker build -f "./apps/audit/Dockerfile" -t "$REGISTRY_URL":"$TAG" .
+    - docker push "$REGISTRY_URL":"$TAG"
+    - echo "Docker Image pushed into registry"
+
+deploy-wallet:
+  rules:
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main")
+  image:
+    name: <base_image_with_kubeConfig>
+    entrypoint: [""]
+  stage: deploy
+  variables:
+    DEPLOY_URL: <deploy_url>
+    DEPLOY_NAME: wallet
+    NAMESPACE: default
+  script:
+    - sed -i "s~<image_url>:<image_tag>~$REGISTRY_URL:$TAG~" k8s/deployment.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/deployment.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/deployment.yaml
+    
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/service.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/service.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/external.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/external.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/nginx.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/nginx.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/;s/<deploy_url>/$DEPLOY_URL/" k8s/ingress.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/ingress.yaml
+    
+    - kubectl apply -f k8s/nginx.yaml
+    - kubectl apply -f k8s/config.yaml
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
+    - kubectl apply -f k8s/external.yaml
+    - kubectl apply -f k8s/ingress.yaml
+  tags:
+    - prod
+
+deploy-audit:
+  rules:
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main")
+  image:
+    name: <base_image_with_kubeConfig>
+    entrypoint: [""]
+  stage: deploy
+  variables:
+    DEPLOY_URL: <deploy_url>
+    DEPLOY_NAME: audit
+    NAMESPACE: default
+  script:
+    - sed -i "s~<image_url>:<image_tag>~$REGISTRY_URL:$TAG~" k8s/deployment.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/deployment.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/deployment.yaml
+    
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/service.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/service.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/external.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/external.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/" k8s/nginx.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/nginx.yaml
+
+    - sed -i "s/<deploy_name>/$DEPLOY_NAME/;s/<deploy_url>/$DEPLOY_URL/" k8s/ingress.yaml
+    - sed -i "s/<namespace>/$NAMESPACE/" k8s/ingress.yaml
+    
+    - kubectl apply -f k8s/nginx.yaml
+    - kubectl apply -f k8s/config.yaml
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
+    - kubectl apply -f k8s/external.yaml
+    - kubectl apply -f k8s/ingress.yaml
+  tags:
+    - prod

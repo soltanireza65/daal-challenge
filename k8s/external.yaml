@@ -1,0 +1,181 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: basedata-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: cashflow-basedata-gw.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: psgateway-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: membership-gateway.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: operationcenter-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: operationcenter-gw-api.prod-backend-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: report-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: report-api.default.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounting-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: accounting-gw.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authority-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: backoffice-authserver-webapi.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: personage-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: membership-gateway.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: acrt-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: accounting-gw.prod-front-middleware.svc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tts-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: tts-bo-gateway.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgateway-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: membership-gateway.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymoney-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: cashflow-paymoney-gw.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: membership-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: membership-gateway.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cashflow-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: cashflow-gw.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ime-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: ime-gateway.prod-xaniis-ime.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calender-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: calender-api.prod-backend-common.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tse-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: tse-tp-gateway.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: riskmanagement-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: customer-riskmanagement-apigateway.prod-front-middleware.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: captcha-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: captcha.prod-front-membership.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xaniar-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: admin-gateway.prod-xanis-ea.svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: common-gateway-svc-bridge
+  namespace: <namespace>
+spec:
+  type: ExternalName
+  externalName: common-gateway.prod-front-middleware.svc

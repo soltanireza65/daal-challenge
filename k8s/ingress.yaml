@@ -1,0 +1,149 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 10m
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 1024k
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: <deploy_name>
+  namespace: <namespace>
+spec:
+  tls:
+  - hosts:
+    - <deploy_url>
+    secretName: <deploy_url>-tls
+  rules:
+  - host: <deploy_url>
+    http:
+      paths:
+      - backend:
+          service: 
+            name: <deploy_name>
+            port: 
+              number: 80
+        path: /()(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: authority-svc-bridge 
+            port:
+              number: 80
+        path: /api/authority(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: operationcenter-svc-bridge 
+            port:
+              number: 80
+        path: /api/operationcenter(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: report-svc-bridge
+            port:
+              number: 80
+        path: /api/armanx-report(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: tts-svc-bridge
+            port:
+              number: 80
+        path: /api/tts(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: paymoney-svc-bridge
+            port:
+              number: 80
+        path: /api/paymoney(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: membership-svc-bridge
+            port:
+              number: 80
+        path: /api/membership(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: cashflow-svc-bridge
+            port:
+              number: 80
+        path: /api/cashflow(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: ime-svc-bridge 
+            port:
+              number: 80
+        path: /api/ime(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: accounting-svc-bridge
+            port:
+              number: 80
+        path: /api/accounting(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: psgateway-svc-bridge
+            port:
+              number: 80
+        path: /api/psgateway(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: calender-svc-bridge
+            port:
+              number: 80
+        path: /api/calender(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: tse-svc-bridge
+            port:
+              number: 80
+        path: /api/tse(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: riskmanagement-svc-bridge
+            port:
+              number: 80
+        path: /api/riskmanagement(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: xaniar-svc-bridge
+            port:
+              number: 80
+        path: /api/xaniar(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: captcha-svc-bridge 
+            port:
+              number: 80
+        path: /captcha-srv(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: common-gateway-svc-bridge 
+            port:
+              number: 80
+        path: /api/common-gateway(/|$)(.*)
+        pathType: Prefix
+      - backend:
+          service:
+            name: basedata-svc-bridge 
+            port:
+              number: 80
+        path: /api/basedata(/|$)(.*)
+        pathType: Prefix
