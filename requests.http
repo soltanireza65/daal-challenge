@@ -2,7 +2,6 @@ GET /api/wallet/balance/1 HTTP/1.1
 Accept: */*
 Host: localhost:3000
 
-
 ###
 
 POST /api/wallet/money HTTP/1.1
