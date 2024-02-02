@@ -51,3 +51,11 @@ make test
   - kubectl
   - gitlab-ci (move repo to gitlab)
   - ci base image with kubeConfig initialized
+
+## Todo
+- proper response codes
+- proper error handling
+- 
+
+## Notes
+- walletService has hardCoded userIds 1 and 2
