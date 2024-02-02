@@ -43,6 +43,12 @@ or you can use [requests.http](https://github.com/soltanireza65/daal-challenge/b
 make test
 ```
 
+or 
+
+```bash
+pnpm test
+```
+
 ## Ci/CD
 - gitlab-ci
 - obviously its not working now:
