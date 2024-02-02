@@ -1,3 +1,9 @@
+## Required tools
+- docker
+- docker-compose
+- make (optional)
+- pnpm
+
 ## Developement
 
 ```bash
