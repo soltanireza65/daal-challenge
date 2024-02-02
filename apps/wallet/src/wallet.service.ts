@@ -1,8 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import { ACTION_WALLET_DEPOSIT, ACTION_WALLET_WITHDRAW } from '@app/common/constants/actions';
+import { EVENT_WALLET_TOPUP } from '@app/common/constants/events';
+import { AUDIT_SERVICE } from '@app/common/constants/services';
+import { AuditLogEventData } from '@app/common/events/audit.event';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { ClientSession, Connection, Model } from 'mongoose';
+import { lastValueFrom } from 'rxjs';
+import { Transaction } from './schemas/transaction.schema';
+import { Wallet } from './schemas/wallet.schema';
 
 @Injectable()
 export class WalletService {
-  getHello(): string {
-    return 'Hello World!';
+
+  constructor(
+    @InjectModel(Wallet.name) private walletModel: Model<Wallet>,
+    @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
+    @InjectConnection() private connection: Connection,
+    @Inject(AUDIT_SERVICE) private readonly auditClient: ClientProxy
+  ) { }
+
+  async getUserBalance(user_id: number) {
+    let wallet = await this.walletModel.findOne({ user_id })
+
+    if (!wallet) {
+      wallet = new this.walletModel({ user_id, balance: 0 });
+      await wallet.save();
+    }
+
+    return {
+      user_id,
+      balance: wallet?.balance,
+    }
+  }
+
+  async updateBallance(user_id: number, amount: number) {
+    let wallet = await this.walletModel.findOne({ user_id })
+
+
+    const session = await this.startTransaction();
+
+    try {
+      if (!wallet) {
+        wallet = new this.walletModel({ user_id, balance: amount });
+        await wallet.save();
+      } else {
+        if (wallet.balance + amount < 0) throw new Error('Insufficient funds')
+        wallet.balance += amount
+        await wallet.save()
+      }
+
+      const transaction = new this.transactionModel({
+        amount: amount,
+        user_id: user_id,
+      });
+
+      const event: AuditLogEventData = {
+        action: amount > 0 ? ACTION_WALLET_DEPOSIT : ACTION_WALLET_WITHDRAW,
+        user_id,
+      }
+
+      await lastValueFrom(
+        this.auditClient.emit(EVENT_WALLET_TOPUP, event)
+      )
+
+      await transaction.save();
+
+      await session.commitTransaction();
+
+      return {
+        user_id,
+        balance: wallet?.balance,
+        reference_id: transaction._id
+      };
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    }
+  }
+
+  async startTransaction(): Promise<ClientSession> {
+    const session = await this.connection.startSession();
+    session.startTransaction();
+    return session;
   }
 }
