@@ -15,3 +15,6 @@ up: ## Up the container images
 
 down: ## Down the container images
 	docker-compose down
+
+test: ## Run the tests
+	pnpm run test

@@ -33,3 +33,21 @@ Host: localhost:3001
 ```
 
 or you can use [requests.http](https://github.com/soltanireza65/daal-challenge/blob/main/requests.http)
+
+## Database
+- mongodb
+
+## Test
+
+```bash
+make test
+```
+
+## Ci/CD
+- gitlab-ci
+- obviously its not working now:
+  - i dont have running kubernetes cluster
+- required tools:
+  - kubectl
+  - gitlab-ci (move repo to gitlab)
+  - ci base image with kubeConfig initialized
