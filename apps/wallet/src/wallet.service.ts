@@ -16,6 +16,10 @@ export class WalletService {
 
   private readonly logger = new Logger(WalletService.name);
 
+  // simulate users in db
+  private readonly _userIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+
   constructor(
     @InjectModel(Wallet.name) private walletModel: Model<Wallet>,
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
@@ -24,6 +28,8 @@ export class WalletService {
   ) { }
 
   async getUserBalance(user_id: number) {
+    if(!this._userIds.includes(user_id)) throw new Error('Invalid user id')
+
     let wallet = await this.walletModel.findOne({ user_id })
 
     if (!wallet) {
@@ -38,8 +44,9 @@ export class WalletService {
   }
 
   async updateBallance(user_id: number, amount: number) {
-    let wallet = await this.walletModel.findOne({ user_id })
+    if(!this._userIds.includes(user_id)) throw new Error('Invalid user id')
 
+    let wallet = await this.walletModel.findOne({ user_id })
 
     const session = await this.startTransaction();
 
@@ -83,23 +90,23 @@ export class WalletService {
   }
 
   @Cron('0 0 * * *') // Runs every day at midnight
-    async calculateAndLogTotalTransactions() {
-      try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+  async calculateAndLogTotalTransactions() {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
 
-        const totalTransactions = await this.transactionModel.countDocuments({
-          createdAt: { $gte: today, $lt: tomorrow }
-        });
+      const totalTransactions = await this.transactionModel.countDocuments({
+        createdAt: { $gte: today, $lt: tomorrow }
+      });
 
-        this.logger.log(`Total transactions processed today: ${totalTransactions}`);
-      } catch (error) {
-        this.logger.error('Error calculating and logging total transactions', error);
-      }
+      this.logger.log(`Total transactions processed today: ${totalTransactions}`);
+    } catch (error) {
+      this.logger.error('Error calculating and logging total transactions', error);
     }
+  }
 
   async startTransaction(): Promise<ClientSession> {
     const session = await this.connection.startSession();
