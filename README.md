@@ -1,7 +1,7 @@
 ## Developement
 
 ```bash
-make build
+make dev
 ```
 
 or
