@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { WalletService } from './wallet.service';
-import { UpdateBalanceDTO } from './dtos/update-balance.dto';
+import { UpdateBalanceDTO } from './dto/update-balance.dto';
 
-
-@Controller()
+@Controller("wallet")
 export class WalletController {
-  constructor(private readonly walletService: WalletService) {}
+  constructor(private readonly walletService: WalletService) { }
 
   @Get("balance/:user_id")
   getUserBalance(@Param('user_id') user_id: string) {
